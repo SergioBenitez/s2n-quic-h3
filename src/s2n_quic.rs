@@ -161,7 +161,8 @@ where
         self.conn.close(
             code.value()
                 .try_into()
-                .unwrap_or_else(|_| VarInt::MAX.into()),
+                // unwrap because this is safe
+                .unwrap_or_else(|_| s2n_quic::application::Error::new(VarInt::MAX.into()).unwrap()),
         );
     }
 }
@@ -435,9 +436,10 @@ where
     }
 
     fn reset(&mut self, reset_code: u64) {
-        let _ = self
-            .stream
-            .reset(reset_code.try_into().unwrap_or_else(|_| VarInt::MAX.into()));
+        let _ =
+            self.stream.reset(reset_code.try_into().unwrap_or_else(|_| {
+                s2n_quic::application::Error::new(VarInt::MAX.into()).unwrap()
+            }));
     }
 
     fn send_id(&self) -> StreamId {
