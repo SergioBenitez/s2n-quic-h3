@@ -5,9 +5,7 @@ use bytes::{Buf, Bytes};
 use core::task::ready;
 use h3::quic::{self, Error, StreamId, WriteBuf};
 use s2n_quic::stream::{BidirectionalStream, ReceiveStream};
-use s2n_quic_core::varint::VarInt;
 use std::{
-    convert::TryInto,
     fmt::{self, Display},
     sync::Arc,
     task::{self, Poll},
@@ -161,7 +159,7 @@ where
         self.conn.close(
             code.value()
                 .try_into()
-                .unwrap_or_else(|_| VarInt::MAX.into()),
+                .unwrap_or_else(|_| u32::MAX.into()),
         );
     }
 }
@@ -437,7 +435,7 @@ where
     fn reset(&mut self, reset_code: u64) {
         let _ = self
             .stream
-            .reset(reset_code.try_into().unwrap_or_else(|_| VarInt::MAX.into()));
+            .reset(reset_code.try_into().unwrap_or_else(|_| u32::MAX.into()));
     }
 
     fn send_id(&self) -> StreamId {
