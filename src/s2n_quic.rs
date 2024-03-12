@@ -28,6 +28,10 @@ impl Connection {
             recv_acceptor: recv,
         }
     }
+
+    pub fn handle(&self) -> &s2n_quic::connection::Handle {
+        &self.conn
+    }
 }
 
 #[derive(Debug)]
@@ -159,7 +163,7 @@ where
         self.conn.close(
             code.value()
                 .try_into()
-                .unwrap_or_else(|_| u32::MAX.into()),
+                .unwrap_or_else(|_| 0x100u16.into()),
         );
     }
 }
@@ -256,7 +260,7 @@ where
 }
 
 pub struct RecvStream {
-    stream: s2n_quic::stream::ReceiveStream,
+    pub stream: s2n_quic::stream::ReceiveStream,
 }
 
 impl RecvStream {
@@ -342,7 +346,7 @@ impl Error for ReadError {
 }
 
 pub struct SendStream<B: Buf> {
-    stream: s2n_quic::stream::SendStream,
+    pub stream: s2n_quic::stream::SendStream,
     chunk: Option<Bytes>,
     buf: Option<WriteBuf<B>>, // TODO: Replace with buf: PhantomData<B>
                               //       after https://github.com/hyperium/h3/issues/78 is resolved
