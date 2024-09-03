@@ -14,10 +14,10 @@ h3 = "0.0.6"
 bytes = { version = "1", default-features = false }
 futures = { version = "0.3", default-features = false }
 tracing = { version = "0.1", optional = true }
-s2n-quic-core = { version = "0.44.1", default-features = false }
+s2n-quic-core = { version = "0.45", default-features = false }
 
 [dependencies.s2n-quic]
-version = "1.44.1"
+version = "1.45"
 default-features = false
 features = ["provider-address-token-default"]
 
